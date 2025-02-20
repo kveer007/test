@@ -1,3 +1,4 @@
+/* History Button */
 .history-btn {
     position: absolute;
     top: 10px;
@@ -8,6 +9,7 @@
     cursor: pointer;
 }
 
+/* History Section */
 .history {
     max-width: 400px;
     background: white;
@@ -18,7 +20,9 @@
     display: none;
 }
 
+/* Clear History Button */
 .clear-history-btn {
     background: red;
     color: white;
+    margin-top: 10px;
 }
