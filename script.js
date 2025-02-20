@@ -2,47 +2,6 @@ let goal = 0;
 let totalIntake = 0;
 let reminderInterval = null;
 
-// Request Notification Permission
-function enableNotifications() {
-    if ("Notification" in window) {
-        Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                alert("Notifications enabled! Set a reminder.");
-            } else {
-                alert("You need to allow notifications in Safari settings.");
-            }
-        });
-    } else {
-        alert("Your browser does not support notifications.");
-    }
-}
-
-// Set Reminder with Correct Timing
-function setReminder() {
-    let time = parseInt(document.getElementById("reminder-time").value);
-    if (!isNaN(time) && time > 0) {
-        if (reminderInterval) clearInterval(reminderInterval);
-
-        alert("Reminder set! You will get notifications every " + time + " minutes.");
-
-        localStorage.setItem("reminderTime", time);
-
-        reminderInterval = setInterval(() => {
-            let currentHour = new Date().getHours();
-            if (currentHour >= 8 && currentHour <= 22) {
-                if (document.visibilityState === "visible") {
-                    new Notification("Time to drink water!", {
-                        body: "Stay hydrated! 🥤",
-                        icon: "icon.png"
-                    });
-                } else {
-                    alert("Time to drink water! Stay hydrated.");
-                }
-            }
-        }, time * 60 * 1000);
-    }
-}
-
 // Save Daily Intake to History at 01:00 AM
 function checkAndSaveDailyIntake() {
     let lastReset = localStorage.getItem("lastResetDate");
