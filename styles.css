@@ -1,42 +1,14 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
-}
-
-.container {
-    max-width: 400px;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: auto;
-    position: relative;
-}
-
-button {
-    background: #007BFF;
-    color: white;
-    border: none;
-    padding: 10px;
-    margin: 5px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.settings-btn {
+.history-btn {
     position: absolute;
     top: 10px;
-    right: 10px;
+    left: 10px;
     font-size: 20px;
     background: transparent;
     border: none;
     cursor: pointer;
 }
 
-.settings {
+.history {
     max-width: 400px;
     background: white;
     padding: 20px;
@@ -44,4 +16,9 @@ button {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 20px auto;
     display: none;
+}
+
+.clear-history-btn {
+    background: red;
+    color: white;
 }
