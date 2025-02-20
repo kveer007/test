@@ -8,6 +8,7 @@
 </head>
 <body>
     <div class="container">
+        <button class="history-btn" onclick="toggleHistory()">📅 History</button>
         <button class="settings-btn" onclick="toggleSettings()">⚙️ Settings</button>
         <h1>Water Intake Tracker</h1>
 
@@ -42,107 +43,13 @@
         <button onclick="resetData()" class="reset-btn">Reset All Data</button>
     </div>
 
-    <!-- JavaScript Inside HTML -->
-    <script>
-        let goal = 0;
-        let totalIntake = 0;
-        let reminderInterval = null;
+    <!-- History Section (Hidden by Default) -->
+    <div class="history" id="history-section">
+        <h2>Daily Water Intake History</h2>
+        <ul id="history-list"></ul>
+        <button onclick="clearHistory()" class="clear-history-btn">Clear History</button>
+    </div>
 
-        function enableNotifications() {
-            if ("Notification" in window) {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        alert("Notifications enabled! Set a reminder.");
-                    } else {
-                        alert("You need to allow notifications in Safari settings.");
-                    }
-                });
-            } else {
-                alert("Your browser does not support notifications.");
-            }
-        }
-
-        function setReminder() {
-            let time = parseInt(document.getElementById("reminder-time").value);
-            if (!isNaN(time) && time > 0) {
-                if (reminderInterval) clearInterval(reminderInterval);
-
-                alert("Reminder set! You will get notifications every " + time + " minutes.");
-
-                localStorage.setItem("reminderTime", time);
-
-                reminderInterval = setInterval(() => {
-                    let currentHour = new Date().getHours();
-                    if (currentHour >= 8 && currentHour <= 22) {
-                        if (document.visibilityState === "visible") {
-                            new Notification("Time to drink water!", {
-                                body: "Stay hydrated! 🥤",
-                                icon: "icon.png"
-                            });
-                        } else {
-                            alert("Time to drink water! Stay hydrated.");
-                        }
-                    }
-                }, time * 60 * 1000);
-            }
-        }
-
-        function stopReminders() {
-            if (reminderInterval) {
-                clearInterval(reminderInterval);
-                reminderInterval = null;
-                localStorage.removeItem("reminderTime");
-                alert("Reminders stopped.");
-            }
-        }
-
-        window.onload = function () {
-            goal = parseInt(localStorage.getItem("waterGoal")) || 0;
-            totalIntake = parseInt(localStorage.getItem("waterIntake")) || 0;
-            let savedReminderTime = localStorage.getItem("reminderTime");
-
-            if (savedReminderTime) {
-                document.getElementById("reminder-time").value = savedReminderTime;
-                setReminder();
-            }
-
-            updateDisplay();
-        };
-
-        function updateDisplay() {
-            document.getElementById("total").innerText = totalIntake;
-            document.getElementById("remaining").innerText = Math.max(goal - totalIntake, 0);
-            updateProgressBar();
-        }
-
-        function updateProgressBar() {
-            let progress = (totalIntake / goal) * 100;
-            document.getElementById("progress-bar").style.width = Math.min(progress, 100) + "%";
-        }
-
-        function addWater(amount) {
-            totalIntake += amount;
-            updateDisplay();
-        }
-
-        function addManual() {
-            let amount = parseInt(document.getElementById("manual").value);
-            if (!isNaN(amount)) {
-                totalIntake += amount;
-                updateDisplay();
-            }
-        }
-
-        function resetDailyIntake() {
-            totalIntake = 0;
-            localStorage.setItem("waterIntake", 0);
-            updateDisplay();
-        }
-
-        function toggleSettings() {
-            let settings = document.getElementById("settings-section");
-            settings.style.display = settings.style.display === "none" ? "block" : "none";
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
