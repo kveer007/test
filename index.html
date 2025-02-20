@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     <title>Water Tracker</title>
     <link rel="stylesheet" href="styles.css">
-</head>
+    <link rel="manifest" href="manifest.json">
+</head>  
 <body>
     <div class="container">
-        <button class="history-btn" onclick="toggleHistory()">📅 History</button>
-        <button class="settings-btn" onclick="toggleSettings()">⚙️ Settings</button>
+        <button class="history-btn" onclick="toggleHistory()">📅</button>
+        <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
         <h1>Water Intake Tracker</h1>
 
         <h2>Total Intake: <span id="total">0</span> ml</h2>
         <h2>Remaining: <span id="remaining">0</span> ml</h2>
 
+        <!-- Progress Bar -->
         <div class="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
         </div>
@@ -29,6 +31,7 @@
         </div>
     </div>
 
+    <!-- Settings Section (Hidden by Default) -->
     <div class="settings" id="settings-section">
         <h2>Settings</h2>
         <label for="goal">Set Daily Goal (ml):</label>
