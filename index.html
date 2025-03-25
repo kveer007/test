@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interval Notification Tester</title>
+
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="Interval Notifier" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <meta name="theme-color" content="#ffffff" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background: #f9f9f9;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+    }
+
+    .status {
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+
+  <!-- OneSignal SDK -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "494e3018-0107-483e-b46c-cbe5e81bc464",
+      serviceWorkerPath: 'OneSignalSDKWorker.js',
+      serviceWorkerUpdaterPath: 'OneSignalSDKUpdaterWorker.js',
+    });
+  });
+</script>
+
+</head>
+<body>
+  <h1>Interval Notification Tester</h1>
+  <p>Enter interval time (in seconds):</p>
+  <input type="number" id="intervalInput" min="1" placeholder="e.g., 10" />
+  <button onclick="startNotifications()">Start Notifications</button>
+  <div class="status" id="status"></div>
+
+  <script>
+    let notificationInterval;
+
+    function startNotifications() {
+      const seconds = parseInt(document.getElementById('intervalInput').value);
+      const statusDiv = document.getElementById('status');
+
+      if (isNaN(seconds) || seconds <= 0) {
+        statusDiv.textContent = "Please enter a valid number greater than 0.";
+        return;
+      }
+
+      Notification.requestPermission().then(permission => {
+        if (permission !== "granted") {
+          statusDiv.textContent = "Notification permission denied.";
+          return;
+        }
+
+        clearInterval(notificationInterval); // Clear previous interval
+
+        notificationInterval = setInterval(() => {
+          new Notification("🔔 Interval Notification", {
+            body: `This is your ${seconds}-second notification.`,
+          });
+        }, seconds * 1000);
+
+        statusDiv.textContent = `Notifications will appear every ${seconds} seconds.`;
+      });
+    }
+
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(() => console.log('Service Worker Registered'))
+          .catch(err => console.error('SW registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>
