@@ -38,18 +38,19 @@
     }
   </style>
 
-  <!-- OneSignal SDK -->
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+ <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
       appId: "494e3018-0107-483e-b46c-cbe5e81bc464",
-      serviceWorkerPath: 'OneSignalSDKWorker.js',
-      serviceWorkerUpdaterPath: 'OneSignalSDKUpdaterWorker.js',
+      serviceWorkerPath: '/test/OneSignalSDKWorker.js',
+      serviceWorkerUpdaterPath: '/test/OneSignalSDKUpdaterWorker.js',
+      serviceWorkerParam: { scope: '/test/' }, // Must match your site scope
     });
   });
 </script>
+
 
 </head>
 <body>
