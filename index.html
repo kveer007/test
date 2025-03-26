@@ -38,20 +38,22 @@
     }
   </style>
 
- <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "494e3018-0107-483e-b46c-cbe5e81bc464",
-      serviceWorkerPath: '/test/OneSignalSDKWorker.js',
-      serviceWorkerUpdaterPath: '/test/OneSignalSDKUpdaterWorker.js',
-      serviceWorkerParam: { scope: '/test/' }, // Must match your site scope
+  <!-- OneSignal SDK -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "494e3018-0107-483e-b46c-cbe5e81bc464",
+        serviceWorkerPath: 'OneSignalSDKWorker.js',
+        serviceWorkerUpdaterPath: 'OneSignalSDKUpdaterWorker.js',
+      });
+
+      window.getOneSignalId = async function () {
+        return await OneSignal.getUserId();
+      };
     });
-  });
-</script>
-
-
+  </script>
 </head>
 <body>
   <h1>Interval Notification Tester</h1>
@@ -61,9 +63,7 @@
   <div class="status" id="status"></div>
 
   <script>
-    let notificationInterval;
-
-    function startNotifications() {
+    async function startNotifications() {
       const seconds = parseInt(document.getElementById('intervalInput').value);
       const statusDiv = document.getElementById('status');
 
@@ -72,21 +72,34 @@
         return;
       }
 
-      Notification.requestPermission().then(permission => {
-        if (permission !== "granted") {
-          statusDiv.textContent = "Notification permission denied.";
-          return;
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        statusDiv.textContent = "Notification permission denied.";
+        return;
+      }
+
+      const playerId = await window.getOneSignalId();
+      if (!playerId) {
+        statusDiv.textContent = "Unable to retrieve OneSignal Player ID.";
+        return;
+      }
+
+      // Send to Make.com webhook
+      fetch('https://hook.eu2.make.com/vikplpp71inczzbb9vlv2a5bfh3ytekh', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          intervalMinutes: seconds / 60,
+          playerId: playerId
+        })
+      }).then(res => {
+        if (res.ok) {
+          statusDiv.textContent = `Interval sent to server: every ${seconds} seconds.`;
+        } else {
+          statusDiv.textContent = "Failed to send interval to server.";
         }
-
-        clearInterval(notificationInterval); // Clear previous interval
-
-        notificationInterval = setInterval(() => {
-          new Notification("🔔 Interval Notification", {
-            body: `This is your ${seconds}-second notification.`,
-          });
-        }, seconds * 1000);
-
-        statusDiv.textContent = `Notifications will appear every ${seconds} seconds.`;
+      }).catch(err => {
+        statusDiv.textContent = "Error sending data: " + err.message;
       });
     }
 
