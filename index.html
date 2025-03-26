@@ -50,8 +50,9 @@
       });
 
       window.getOneSignalId = async function () {
-        return await OneSignal.getUserId();
-      };
+  const user = await OneSignal.User.get();
+  return user.id;
+};
     });
   </script>
 </head>
@@ -83,10 +84,7 @@
         statusDiv.textContent = "Unable to retrieve OneSignal Player ID.";
         return;
       }
-      console.log("Sending data to Make:", {
-  intervalMinutes: seconds / 60,
-  playerId: playerId
-});
+
       // Send to Make.com webhook
       fetch('https://hook.eu2.make.com/vikplpp71inczzbb9vlv2a5bfh3ytekh', {
         method: 'POST',
